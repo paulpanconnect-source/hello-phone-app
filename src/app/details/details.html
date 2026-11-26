@@ -1,0 +1,89 @@
+<main class="screen scroll">
+  <app-brand-header />
+  <p class="prompt">{{ helpText() }}</p>
+
+  <div class="tabs" role="tablist" aria-label="Who is checking in">
+    <button
+      type="button"
+      role="tab"
+      [attr.aria-selected]="role() === 'customer'"
+      (click)="selectRole('customer')"
+    >
+      Check-in
+    </button>
+    <button
+      type="button"
+      role="tab"
+      [attr.aria-selected]="role() === 'staff'"
+      (click)="selectRole('staff')"
+    >
+      Dealer Staff
+    </button>
+  </div>
+
+  <form class="form" (submit)="submit($event)">
+    <label class="field">
+      First name
+      <input
+        type="text"
+        name="firstName"
+        autocomplete="given-name"
+        [value]="firstName()"
+        (input)="update('firstName', $any($event.target).value)"
+      />
+      @if (submitted() && errors().firstName) {
+        <span class="error">{{ errors().firstName }}</span>
+      }
+    </label>
+
+    <label class="field">
+      Last name
+      <input
+        type="text"
+        name="lastName"
+        autocomplete="family-name"
+        [value]="lastName()"
+        (input)="update('lastName', $any($event.target).value)"
+      />
+      @if (submitted() && errors().lastName) {
+        <span class="error">{{ errors().lastName }}</span>
+      }
+    </label>
+
+    <label class="field">
+      Mobile number
+      <input
+        type="tel"
+        name="mobile"
+        inputmode="tel"
+        autocomplete="tel"
+        [value]="mobile()"
+        (input)="update('mobile', $any($event.target).value)"
+      />
+      @if (submitted() && errors().mobile) {
+        <span class="error">{{ errors().mobile }}</span>
+      }
+    </label>
+
+    <label class="field">
+      Email address
+      <input
+        type="email"
+        name="email"
+        inputmode="email"
+        autocomplete="email"
+        [value]="email()"
+        (input)="update('email', $any($event.target).value)"
+      />
+      @if (submitted() && errors().email) {
+        <span class="error">{{ errors().email }}</span>
+      }
+    </label>
+
+    <button type="submit" class="primary" [disabled]="submitting()">
+      {{ submitting() ? 'Sending…' : 'Send code' }}
+    </button>
+  </form>
+
+  <button type="button" class="text" (click)="back()">Back</button>
+</main>

@@ -1,0 +1,34 @@
+<main class="screen">
+  <app-brand-header />
+
+  @if (checkedIn()) {
+    <h1>You're checked in, {{ guest()?.firstName }}</h1>
+  } @else {
+    <h1>Enter your 6-digit code</h1>
+    <p class="prompt">
+      @if (role() === 'staff') {
+        Ask the customer for the code sent to {{ maskedMobile() }}.
+      } @else {
+        Enter the code sent to {{ maskedMobile() }}.
+      }
+    </p>
+    <div class="digits">
+      @for (digit of digits(); track $index) {
+        <input
+          #box
+          type="text"
+          inputmode="numeric"
+          maxlength="1"
+          [attr.autocomplete]="$index === 0 ? 'one-time-code' : 'off'"
+          [attr.aria-label]="'Digit ' + ($index + 1) + ' of 6'"
+          [value]="digit"
+          (input)="onInput($index, $event)"
+          (keydown)="onKey($index, $event)"
+          (paste)="onPaste($event)"
+        />
+      }
+    </div>
+    <button type="button" class="text" (click)="resend()">Resend code</button>
+    <button type="button" class="text" (click)="back()">Back</button>
+  }
+</main>
