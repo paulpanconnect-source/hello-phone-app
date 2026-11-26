@@ -27,8 +27,10 @@
       <input
         type="text"
         name="firstName"
-        autocomplete="given-name"
+        autocomplete="off"
         [value]="firstName()"
+        (focus)="prefill('firstName')"
+        (click)="prefill('firstName')"
         (input)="update('firstName', $any($event.target).value)"
       />
       @if (submitted() && errors().firstName) {
@@ -41,8 +43,10 @@
       <input
         type="text"
         name="lastName"
-        autocomplete="family-name"
+        autocomplete="off"
         [value]="lastName()"
+        (focus)="prefill('lastName')"
+        (click)="prefill('lastName')"
         (input)="update('lastName', $any($event.target).value)"
       />
       @if (submitted() && errors().lastName) {
@@ -56,8 +60,10 @@
         type="tel"
         name="mobile"
         inputmode="tel"
-        autocomplete="tel"
+        autocomplete="off"
         [value]="mobile()"
+        (focus)="prefill('mobile')"
+        (click)="prefill('mobile')"
         (input)="update('mobile', $any($event.target).value)"
       />
       @if (submitted() && errors().mobile) {
@@ -71,8 +77,10 @@
         type="email"
         name="email"
         inputmode="email"
-        autocomplete="email"
+        autocomplete="off"
         [value]="email()"
+        (focus)="prefill('email')"
+        (click)="prefill('email')"
         (input)="update('email', $any($event.target).value)"
       />
       @if (submitted() && errors().email) {

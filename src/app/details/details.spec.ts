@@ -24,4 +24,15 @@ describe('Details', () => {
     expect(text).toContain('Enter a 10-digit mobile number.');
     expect(TestBed.inject(CheckInService).guest()).toBeNull();
   });
+
+  it('should prefill a field when it is focused', () => {
+    const fixture = TestBed.createComponent(Details);
+    fixture.detectChanges();
+    const firstName = fixture.nativeElement.querySelector(
+      'input[name="firstName"]',
+    ) as HTMLInputElement;
+    firstName.dispatchEvent(new Event('focus'));
+    fixture.detectChanges();
+    expect(firstName.value).toBe('Jordan');
+  });
 });

@@ -41,13 +41,30 @@ export class Details {
     this.persist();
   }
 
+  protected prefill(field: 'firstName' | 'lastName' | 'mobile' | 'email'): void {
+    if (this[field]().trim()) {
+      return;
+    }
+    const samples = {
+      firstName: 'Jordan',
+      lastName: 'Miller',
+      mobile: '512-123-456',
+      email: 'j.miller@example.com',
+    };
+    this[field].set(samples[field]);
+    this.persist();
+  }
+
   protected errors(): { firstName: string; lastName: string; mobile: string; email: string } {
     const mobileDigits = this.mobile().replace(/\D/g, '');
     const email = this.email().trim();
     return {
       firstName: this.firstName().trim() ? '' : 'First name is required.',
       lastName: this.lastName().trim() ? '' : 'Last name is required.',
-      mobile: mobileDigits.length === 10 ? '' : 'Enter a 10-digit mobile number.',
+      mobile:
+        mobileDigits.length === 9 || mobileDigits.length === 10
+          ? ''
+          : 'Enter a 10-digit mobile number.',
       email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
         ? ''
         : 'Enter a valid email address.',

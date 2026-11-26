@@ -1,0 +1,89 @@
+<main class="screen scroll" [class.settled]="bothAgreed()">
+  <app-brand-header />
+  <h1>Welcome {{ guest()?.firstName }} {{ guest()?.lastName }} for first time visit.</h1>
+
+  <section class="offer" aria-labelledby="gm-account">
+    @if (account() === 'open') {
+      <h2 id="gm-account">Create your GM account, earn 1,500 points.</h2>
+      <p>Join GM Rewards free.</p>
+      <div class="actions">
+        <button type="button" class="primary" (click)="chooseAccount(true)">
+          Agree &amp; create account
+        </button>
+        <button type="button" class="secondary" (click)="chooseAccount(false)">
+          Not now
+        </button>
+      </div>
+    } @else if (account() === 'accepted') {
+      <p class="confirm" id="gm-account">GM account created and +1,500 points.</p>
+    } @else {
+      <p class="confirm" id="gm-account">No GM account for now.</p>
+    }
+  </section>
+
+  <section
+    class="offer"
+    [class.locked]="account() === 'open'"
+    aria-labelledby="gm-share"
+  >
+    @if (share() === 'accepted') {
+      <p class="confirm" id="gm-share">
+        Shared with ABC Chevrolet Motors. +1,500 points.
+      </p>
+    } @else if (share() === 'declined') {
+      <p class="confirm" id="gm-share">Not shared with ABC Chevrolet Motors.</p>
+    } @else {
+      <h2 id="gm-share">Share your GM account with ABC Chevrolet Motors.</h2>
+      <p>Earn another 1,500 points.</p>
+      <div class="actions">
+        <button
+          type="button"
+          class="primary"
+          [disabled]="account() === 'open'"
+          (click)="chooseShare(true)"
+        >
+          Agree to share
+        </button>
+        <button
+          type="button"
+          class="secondary"
+          [disabled]="account() === 'open'"
+          (click)="chooseShare(false)"
+        >
+          Not now
+        </button>
+      </div>
+    }
+  </section>
+
+  @if (bothAgreed()) {
+    <div class="checked-in">
+      <div class="check" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="28" height="28">
+          <path
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M5 12.5 9.5 17 19 7.5"
+          />
+        </svg>
+      </div>
+      <p class="checked-label">checked in!</p>
+    </div>
+    <div class="dock">
+      <p class="serve">Let us continue to serve you</p>
+      <button type="button" class="reward">
+        <span class="dock-verb">Redeem</span>
+        <span class="dock-detail">points · 3,000 pts</span>
+        <span class="dock-context">GM Rewards</span>
+      </button>
+      <button type="button" class="floor">
+        <span class="dock-verb">Browse</span>
+        <span class="dock-detail">vehicles</span>
+        <span class="dock-context">GM Retail Center</span>
+      </button>
+    </div>
+  }
+</main>

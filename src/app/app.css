@@ -192,3 +192,168 @@ button:active {
   outline: 2px solid #d4b483;
   outline-offset: 1px;
 }
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.spinner {
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 3px solid rgba(212, 180, 131, 0.25);
+  border-top-color: #d4b483;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.offer {
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  padding: 1.15rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(212, 180, 131, 0.4);
+  background: #1c1916;
+}
+
+.offer.locked {
+  opacity: 0.45;
+}
+
+.offer h2,
+.offer p {
+  margin: 0;
+}
+
+.offer h2 {
+  font-size: 1.2rem;
+  line-height: 1.35;
+}
+
+.offer p {
+  margin-top: 0.4rem;
+  color: #e7e1d6;
+  line-height: 1.45;
+}
+
+.offer .confirm {
+  margin-top: 0;
+  color: #d4b483;
+  font-size: 1.15rem;
+  font-weight: 650;
+}
+
+.screen.settled {
+  padding-bottom: 11rem;
+}
+
+.checked-in {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+}
+
+.check {
+  width: 3.25rem;
+  height: 3.25rem;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #218a52;
+  color: #f4fff7;
+  box-shadow: 0 0 0 6px rgba(33, 138, 82, 0.22);
+}
+
+.checked-label {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+
+.serve {
+  grid-column: 1 / -1;
+  margin: 0 0 0.15rem;
+  text-align: center;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  color: #f5f0e6;
+}
+
+.dock {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(26rem, 100%);
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem calc(0.85rem + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(18, 17, 15, 0), #12110f 28%);
+}
+
+.dock button {
+  min-height: 6.25rem;
+  padding: 0.8rem 0.7rem;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.2rem;
+  text-align: left;
+  white-space: normal;
+  line-height: 1.25;
+}
+
+.dock .dock-verb {
+  font-size: 1.45rem;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.dock .dock-detail {
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
+.dock .dock-context {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  opacity: 0.72;
+}
+
+.dock .reward {
+  border: 0;
+  background: #d4b483;
+  color: #1a1612;
+}
+
+.dock .floor {
+  border: 1px solid rgba(212, 180, 131, 0.55);
+  background: #1c1916;
+  color: #f5f0e6;
+}
