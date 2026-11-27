@@ -26,6 +26,7 @@ export class Code {
   protected readonly role = this.checkIn.role;
   protected readonly digits = signal(['', '', '', '', '', '']);
   protected readonly verifying = signal(false);
+  protected readonly verified = signal(false);
   protected readonly codeError = signal('');
 
   constructor() {
@@ -94,11 +95,16 @@ export class Code {
         throw new Error('Missing confirmation');
       }
       await checkSmsCode(confirmation, this.digits().join(''));
-      await this.router.navigateByUrl('/check-in/rewards');
+      this.verified.set(true);
     } catch {
       this.codeError.set("That code didn't match.");
+    } finally {
       this.verifying.set(false);
     }
+  }
+
+  protected continue(): void {
+    void this.router.navigateByUrl('/check-in/rewards');
   }
 
   protected async resend(): Promise<void> {

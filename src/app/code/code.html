@@ -1,6 +1,13 @@
 <main class="screen">
   <app-brand-header />
 
+  @if (verified()) {
+    <h1>Verification Successful!</h1>
+    <p class="prompt">We're thrilled to have you here!</p>
+    <button type="button" class="primary" (click)="continue()">
+      Continue &amp; claim 3,000 points!
+    </button>
+  } @else {
   <h1>Enter your 6-digit code</h1>
   <p class="prompt">
     @if (role() === 'staff') {
@@ -46,4 +53,5 @@
   <button type="button" class="text" (click)="back()" [disabled]="verifying()">
     Back
   </button>
+  }
 </main>

@@ -69,4 +69,30 @@ describe('Code', () => {
     expect(compiled.textContent).toContain("That code didn't match.");
     expect(TestBed.inject(Router).url).not.toContain('rewards');
   });
+
+  it('should show a success message and hide Resend after the code matches', async () => {
+    TestBed.inject(CheckInService).confirmation.set({
+      confirm: () => Promise.resolve(undefined),
+    } as unknown as ConfirmationResult);
+    const fixture = enterCode();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const confirm = [...compiled.querySelectorAll('button')].find((button) =>
+      button.textContent?.includes('Confirm'),
+    );
+    confirm?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(compiled.textContent).toContain('Verification Successful!');
+    expect(compiled.textContent).toContain("We're thrilled to have you here!");
+    expect(compiled.textContent).toContain('Continue & claim 3,000 points!');
+    expect(compiled.textContent).not.toContain('Resend code');
+    expect(TestBed.inject(Router).url).not.toContain('rewards');
+
+    const next = [...compiled.querySelectorAll('button')].find((button) =>
+      button.textContent?.includes('Continue'),
+    );
+    next?.click();
+    await fixture.whenStable();
+    expect(TestBed.inject(Router).url).toContain('rewards');
+  });
 });
