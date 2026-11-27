@@ -1,5 +1,5 @@
-<main class="screen scroll">
-  <app-brand-header />
+<main class="screen form-fit">
+  <app-brand-header [compact]="true" />
   <p class="prompt">{{ helpText() }}</p>
 
   <div class="tabs" role="tablist" aria-label="Who is checking in">
@@ -22,7 +22,8 @@
   </div>
 
   <form class="form" (submit)="submit($event)">
-    <label class="field">
+    <div class="name-row">
+      <label class="field">
       First name
       <input
         type="text"
@@ -36,9 +37,9 @@
       @if (submitted() && errors().firstName) {
         <span class="error">{{ errors().firstName }}</span>
       }
-    </label>
+      </label>
 
-    <label class="field">
+      <label class="field">
       Last name
       <input
         type="text"
@@ -52,7 +53,8 @@
       @if (submitted() && errors().lastName) {
         <span class="error">{{ errors().lastName }}</span>
       }
-    </label>
+      </label>
+    </div>
 
     <label class="field">
       Mobile number

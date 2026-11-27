@@ -101,6 +101,58 @@ button:active {
   padding-bottom: 2.25rem;
 }
 
+.screen.form-fit {
+  justify-content: safe center;
+  gap: 0.55rem;
+  min-height: 100svh;
+  padding: 0.85rem 1.15rem;
+  box-sizing: border-box;
+}
+
+.screen.form-fit .prompt {
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.screen.form-fit button {
+  box-sizing: border-box;
+  padding: 0.4rem 0.9rem;
+}
+
+.screen.form-fit .tabs button {
+  min-height: 2.5rem;
+  font-size: 0.95rem;
+}
+
+.screen.form-fit .form {
+  gap: 0.5rem;
+  margin-top: 0;
+}
+
+.screen.form-fit .name-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+}
+
+.screen.form-fit .field {
+  gap: 0.2rem;
+  font-size: 0.8rem;
+}
+
+.screen.form-fit .field input {
+  box-sizing: border-box;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.7rem;
+  font-size: 1rem;
+}
+
+.screen.form-fit button.primary,
+.screen.form-fit button.text {
+  min-height: 2.75rem;
+}
+
 .tabs {
   width: 100%;
   display: grid;

@@ -5,3 +5,7 @@
   color: #f5f0e6;
   background: #12110f;
 }
+
+:host.form-page {
+  min-height: 100svh;
+}

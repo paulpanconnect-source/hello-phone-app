@@ -3,3 +3,26 @@
   flex-direction: column;
   align-items: center;
 }
+
+:host.compact {
+  flex-direction: row;
+  justify-content: center;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+:host.compact .mark {
+  width: 2.35rem;
+  height: 2.35rem;
+  flex: 0 0 auto;
+  border-width: 1.5px;
+  font-size: 0.68rem;
+}
+
+:host.compact .dealership {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  line-height: 1.15;
+  white-space: nowrap;
+}

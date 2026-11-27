@@ -8,6 +8,7 @@ import { CheckInRole, CheckInService } from '../check-in.service';
   imports: [BrandHeader],
   styleUrls: ['../host.css', '../app.css'],
   templateUrl: './details.html',
+  host: { class: 'form-page' },
 })
 export class Details {
   private readonly checkIn = inject(CheckInService);
