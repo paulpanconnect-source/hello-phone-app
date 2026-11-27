@@ -1,0 +1,38 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.connected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  color: #f5f0e6;
+  font-size: 0.95rem;
+  font-weight: 650;
+}
+
+.connected .sync {
+  width: 1.45rem;
+  height: 1.45rem;
+  flex: 0 0 auto;
+  color: #218a52;
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  border: 1.5px solid #7eb6ff;
+  color: #d7e8ff;
+  background: #1a3f73;
+  font-size: 0.62rem;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}

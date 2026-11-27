@@ -64,7 +64,7 @@
         [value]="mobile()"
         (focus)="prefill('mobile')"
         (click)="prefill('mobile')"
-        (input)="update('mobile', $any($event.target).value)"
+        (input)="onMobile($event)"
       />
       @if (submitted() && errors().mobile) {
         <span class="error">{{ errors().mobile }}</span>

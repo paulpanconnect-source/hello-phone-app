@@ -1,0 +1,33 @@
+<main class="screen scroll">
+  <app-brand-header [compact]="true" />
+  <app-retail-status badge="RW" partner="GM Rewards" />
+  <h1>Redeem points</h1>
+  <p class="prompt">Balance: {{ points(showroom.balance()) }} points</p>
+
+  @for (offer of showroom.offers; track offer.id) {
+    <section
+      class="offer reward-row"
+      [class.selected]="showroom.rewardId() === offer.id"
+      [class.pick]="!redeemed(offer.id)"
+      (click)="select(offer)"
+    >
+      <div>
+        <h2>{{ offer.name }}</h2>
+        <p>{{ points(offer.cost) }} points</p>
+      </div>
+      @if (redeemed(offer.id)) {
+        <p class="confirm">Redeemed</p>
+      }
+    </section>
+  }
+
+  <button
+    type="button"
+    class="primary"
+    [disabled]="!showroom.rewardId()"
+    (click)="redeem()"
+  >
+    Redeem
+  </button>
+  <button type="button" class="text" (click)="back()">Back</button>
+</main>

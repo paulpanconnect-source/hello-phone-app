@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { routes } from '../app.routes';
 import { CheckInService } from '../check-in.service';
 import { Rewards } from './rewards';
@@ -12,7 +12,7 @@ describe('Rewards', () => {
     }).compileComponents();
   });
 
-  it('should confirm the GM account and unlock sharing', () => {
+  it('should confirm the GM account and unlock sharing', async () => {
     TestBed.inject(CheckInService).guest.set({
       firstName: 'Alex',
       lastName: 'Kim',
@@ -55,10 +55,23 @@ describe('Rewards', () => {
       'Shared with ABC Chevrolet Motors. +1,500 points.',
     );
     expect(compiled.textContent).toContain('checked in!');
+    expect(compiled.textContent).toContain('points · 3,000 pts');
     expect(compiled.textContent).toContain('Let us continue to serve you');
     expect(compiled.textContent).not.toContain("You're all checked in!");
     expect(compiled.textContent).not.toContain('so is the showroom');
     expect(compiled.textContent).toContain('Redeem');
     expect(compiled.textContent).toContain('Browse');
+    const browse = [...compiled.querySelectorAll('button')].find((button) =>
+      button.textContent?.includes('Browse'),
+    ) as HTMLButtonElement;
+    expect(browse.classList.contains('floor')).toBe(true);
+    expect(getComputedStyle(browse).backgroundColor).toBe('rgb(212, 180, 131)');
+
+    const redeem = [...compiled.querySelectorAll('button')].find((button) =>
+      button.textContent?.includes('Redeem'),
+    );
+    redeem?.click();
+    await fixture.whenStable();
+    expect(TestBed.inject(Router).url).toContain('/check-in/redeem');
   });
 });

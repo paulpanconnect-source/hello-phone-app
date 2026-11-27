@@ -74,12 +74,12 @@
     </div>
     <div class="dock">
       <p class="serve">Let us continue to serve you</p>
-      <button type="button" class="reward">
+      <button type="button" class="reward" (click)="redeemPoints()">
         <span class="dock-verb">Redeem</span>
-        <span class="dock-detail">points · 3,000 pts</span>
+        <span class="dock-detail">points · {{ points(showroom.balance()) }} pts</span>
         <span class="dock-context">GM Rewards</span>
       </button>
-      <button type="button" class="floor">
+      <button type="button" class="floor" (click)="browseVehicles()">
         <span class="dock-verb">Browse</span>
         <span class="dock-detail">vehicles</span>
         <span class="dock-context">GM Retail Center</span>

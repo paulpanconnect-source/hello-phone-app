@@ -1,0 +1,46 @@
+<main class="screen scroll">
+  <app-brand-header [compact]="true" />
+  <app-retail-status />
+  <h1>Browse vehicles</h1>
+  <p class="prompt">Choose a brand, model, and trim.</p>
+
+  <form class="form" (submit)="$event.preventDefault(); search()">
+    <label class="field">
+      Brand
+      <select (change)="onBrand($event)">
+        <option value="" [selected]="showroom.brand() === ''">Select a brand</option>
+        @for (brand of showroom.brands; track brand.name) {
+          <option [value]="brand.name" [selected]="showroom.brand() === brand.name">
+            {{ brand.name }}
+          </option>
+        }
+      </select>
+    </label>
+
+    <label class="field">
+      Model
+      <select [disabled]="!showroom.brand()" (change)="onModel($event)">
+        <option value="" [selected]="showroom.model() === ''">Select a model</option>
+        @for (model of showroom.models(); track model.name) {
+          <option [value]="model.name" [selected]="showroom.model() === model.name">
+            {{ model.name }}
+          </option>
+        }
+      </select>
+    </label>
+
+    <label class="field">
+      Trim
+      <select [disabled]="!showroom.model()" (change)="onTrim($event)">
+        <option value="" [selected]="showroom.trim() === ''">Select a trim</option>
+        @for (trim of showroom.trims(); track trim) {
+          <option [value]="trim" [selected]="showroom.trim() === trim">{{ trim }}</option>
+        }
+      </select>
+    </label>
+
+    <button type="submit" class="primary" [disabled]="!canSearch()">Search</button>
+  </form>
+
+  <button type="button" class="text" (click)="back()">Back</button>
+</main>

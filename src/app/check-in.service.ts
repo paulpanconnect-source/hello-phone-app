@@ -1,8 +1,10 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import type { ConfirmationResult } from 'firebase/auth';
 import { sendSmsCode } from './phone-auth';
+import { ShowroomService } from './showroom.service';
 
 export type CheckInRole = 'customer' | 'staff';
+export type OfferChoice = 'open' | 'accepted' | 'declined';
 
 export interface CheckInGuest {
   firstName: string;
@@ -20,10 +22,13 @@ const EMPTY_GUEST: CheckInGuest = {
 
 @Injectable({ providedIn: 'root' })
 export class CheckInService {
+  private readonly showroom = inject(ShowroomService);
   readonly role = signal<CheckInRole>('customer');
   readonly draft = signal<CheckInGuest>({ ...EMPTY_GUEST });
   readonly guest = signal<CheckInGuest | null>(null);
   readonly confirmation = signal<ConfirmationResult | null>(null);
+  readonly account = signal<OfferChoice>('open');
+  readonly share = signal<OfferChoice>('open');
 
   async sendCode(guest: CheckInGuest, role: CheckInRole): Promise<void> {
     const saved: CheckInGuest = {
@@ -37,5 +42,8 @@ export class CheckInService {
     this.role.set(role);
     this.guest.set(saved);
     this.confirmation.set(confirmation);
+    this.account.set('open');
+    this.share.set('open');
+    this.showroom.resetVisit();
   }
 }

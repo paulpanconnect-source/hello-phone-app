@@ -35,4 +35,16 @@ describe('Details', () => {
     fixture.detectChanges();
     expect(firstName.value).toBe('Jordan');
   });
+
+  it('should format the mobile number while typing', () => {
+    const fixture = TestBed.createComponent(Details);
+    fixture.detectChanges();
+    const mobile = fixture.nativeElement.querySelector(
+      'input[name="mobile"]',
+    ) as HTMLInputElement;
+    mobile.value = '6505553434';
+    mobile.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    expect(mobile.value).toBe('650-555-3434');
+  });
 });

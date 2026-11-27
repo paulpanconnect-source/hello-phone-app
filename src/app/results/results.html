@@ -1,0 +1,54 @@
+<main class="screen scroll">
+  <app-brand-header [compact]="true" />
+  <app-retail-status />
+  <h1>{{ showroom.brand() }} {{ showroom.model() }}</h1>
+  <p class="prompt">
+    @if (showroom.model() === 'Equinox') {
+      New near Round Rock, TX
+    } @else {
+      {{ showroom.trim() }}
+    }
+  </p>
+
+  @for (listing of showroom.topMatches(); track listing.id) {
+    <article
+      class="offer vehicle"
+      [class.selected]="showroom.selectedId() === listing.id"
+      role="button"
+      tabindex="0"
+      [attr.aria-pressed]="showroom.selectedId() === listing.id"
+      (click)="select(listing)"
+      (keydown.enter)="select(listing)"
+      (keydown.space)="$event.preventDefault(); select(listing)"
+    >
+      <img [src]="listing.image" [alt]="listing.year + ' ' + listing.brand + ' ' + listing.model" />
+      <div class="vehicle-copy">
+        <h2>{{ listing.year }} {{ listing.model }} {{ listing.trim }}</h2>
+        <p>
+          @if (listing.price) {
+            {{ listing.price }}@if (listing.color) { · {{ listing.color }} }
+          } @else {
+            {{ listing.color }} · Stock {{ listing.stock }}
+          }
+        </p>
+      </div>
+    </article>
+  }
+
+  <p class="prompt">and {{ showroom.moreCount() }} more meet search</p>
+
+  <div class="actions pair">
+    <button type="button" class="primary" [disabled]="showroom.searchSaved()" (click)="saveSearch()">
+      {{ showroom.searchSaved() ? 'Search saved' : 'Save Search' }}
+    </button>
+    <button
+      type="button"
+      class="secondary"
+      [disabled]="!showroom.selectedId() || showroom.testDriveRequested()"
+      (click)="testDrive()"
+    >
+      {{ showroom.testDriveRequested() ? 'Test drive requested' : 'Test drive' }}
+    </button>
+  </div>
+  <button type="button" class="text" (click)="back()">Back</button>
+</main>

@@ -1,0 +1,33 @@
+<main class="screen">
+  <app-brand-header [compact]="true" />
+  <app-retail-status badge="RW" partner="GM Rewards" />
+  <h1>Your service code</h1>
+  <p class="prompt">
+    Take this code to the service department for your free {{ offerName() }}.
+  </p>
+  <p class="service-code">{{ code() }}</p>
+  <p class="sent">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.4"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M5 12.5 9.5 17 19 7.5"
+      />
+    </svg>
+    <span>The redemption code sent to ••••{{ phoneEnding() }}.</span>
+  </p>
+  <section class="offer ledger">
+    <p class="ledger-row">
+      <span>Points Redeemed</span>
+      <span>-{{ points(showroom.redemption()?.burned ?? 0) }}</span>
+    </p>
+    <p class="ledger-row balance">
+      <span>Available Balance</span>
+      <span class="balance-amount">{{ points(showroom.balance()) }}</span>
+    </p>
+  </section>
+  <button type="button" class="text" (click)="back()">Back</button>
+</main>
