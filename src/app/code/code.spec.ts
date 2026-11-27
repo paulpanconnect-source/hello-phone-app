@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { vi } from 'vitest';
+import type { ConfirmationResult } from 'firebase/auth';
 import { provideRouter, Router } from '@angular/router';
 import { routes } from '../app.routes';
 import { CheckInService } from '../check-in.service';
@@ -17,7 +17,7 @@ describe('Code', () => {
     TestBed.inject(CheckInService).guest.set({
       firstName: 'Alex',
       lastName: 'Kim',
-      mobile: '5551234567',
+      mobile: '6505553434',
       email: 'alex@example.com',
     });
     const fixture = TestBed.createComponent(Code);
@@ -40,36 +40,10 @@ describe('Code', () => {
     expect(TestBed.inject(Router).url).not.toContain('rewards');
   });
 
-  it('should fill 482913 one digit at a time after any box is clicked', async () => {
-    vi.useFakeTimers();
-    TestBed.inject(CheckInService).guest.set({
-      firstName: 'Alex',
-      lastName: 'Kim',
-      mobile: '5551234567',
-      email: 'alex@example.com',
-    });
-    const fixture = TestBed.createComponent(Code);
-    fixture.detectChanges();
-    const inputs = [
-      ...(fixture.nativeElement as HTMLElement).querySelectorAll('input'),
-    ];
-
-    inputs[3].click();
-    fixture.detectChanges();
-    expect(inputs.map((input) => input.value).join('')).toBe('4');
-
-    await vi.advanceTimersByTimeAsync(280);
-    fixture.detectChanges();
-    expect(inputs.map((input) => input.value).join('')).toBe('48');
-
-    await vi.advanceTimersByTimeAsync(280 * 4);
-    fixture.detectChanges();
-    expect(inputs.map((input) => input.value).join('')).toBe('482913');
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Confirm');
-    vi.useRealTimers();
-  });
-
   it('should show a verification message after Confirm', () => {
+    TestBed.inject(CheckInService).confirmation.set({
+      confirm: () => new Promise(() => undefined),
+    } as unknown as ConfirmationResult);
     const fixture = enterCode();
     const compiled = fixture.nativeElement as HTMLElement;
     const confirm = [...compiled.querySelectorAll('button')].find((button) =>
@@ -78,5 +52,21 @@ describe('Code', () => {
     confirm?.click();
     fixture.detectChanges();
     expect(compiled.textContent).toContain('Verifying your code');
+  });
+
+  it('should stay on the page when the code does not match', async () => {
+    TestBed.inject(CheckInService).confirmation.set({
+      confirm: () => Promise.reject(new Error('bad code')),
+    } as unknown as ConfirmationResult);
+    const fixture = enterCode();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const confirm = [...compiled.querySelectorAll('button')].find((button) =>
+      button.textContent?.includes('Confirm'),
+    );
+    confirm?.click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(compiled.textContent).toContain("That code didn't match.");
+    expect(TestBed.inject(Router).url).not.toContain('rewards');
   });
 });

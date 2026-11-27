@@ -21,6 +21,7 @@ export class Details {
   protected readonly email = signal(this.initial.email);
   protected readonly submitted = signal(false);
   protected readonly submitting = signal(false);
+  protected readonly sendError = signal('');
 
   protected helpText(): string {
     return this.role() === 'staff'
@@ -48,7 +49,7 @@ export class Details {
     const samples = {
       firstName: 'Jordan',
       lastName: 'Miller',
-      mobile: '512-123-456',
+      mobile: '650-555-3434',
       email: 'j.miller@example.com',
     };
     this[field].set(samples[field]);
@@ -61,10 +62,7 @@ export class Details {
     return {
       firstName: this.firstName().trim() ? '' : 'First name is required.',
       lastName: this.lastName().trim() ? '' : 'Last name is required.',
-      mobile:
-        mobileDigits.length === 9 || mobileDigits.length === 10
-          ? ''
-          : 'Enter a 10-digit mobile number.',
+      mobile: mobileDigits.length === 10 ? '' : 'Enter a 10-digit mobile number.',
       email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
         ? ''
         : 'Enter a valid email address.',
@@ -79,6 +77,7 @@ export class Details {
       return;
     }
     this.submitting.set(true);
+    this.sendError.set('');
     try {
       await this.checkIn.sendCode(
         {
@@ -90,6 +89,8 @@ export class Details {
         this.role(),
       );
       await this.router.navigateByUrl('/check-in/code');
+    } catch {
+      this.sendError.set("We couldn't text that number.");
     } finally {
       this.submitting.set(false);
     }

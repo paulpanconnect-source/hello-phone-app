@@ -1,4 +1,6 @@
 import { Injectable, signal } from '@angular/core';
+import type { ConfirmationResult } from 'firebase/auth';
+import { sendSmsCode } from './phone-auth';
 
 export type CheckInRole = 'customer' | 'staff';
 
@@ -21,6 +23,7 @@ export class CheckInService {
   readonly role = signal<CheckInRole>('customer');
   readonly draft = signal<CheckInGuest>({ ...EMPTY_GUEST });
   readonly guest = signal<CheckInGuest | null>(null);
+  readonly confirmation = signal<ConfirmationResult | null>(null);
 
   async sendCode(guest: CheckInGuest, role: CheckInRole): Promise<void> {
     const saved: CheckInGuest = {
@@ -29,9 +32,10 @@ export class CheckInService {
       mobile: guest.mobile.replace(/\D/g, ''),
       email: guest.email.trim(),
     };
+    const confirmation = await sendSmsCode('send-code', saved.mobile);
     this.draft.set(saved);
     this.role.set(role);
     this.guest.set(saved);
-    await new Promise((resolve) => setTimeout(resolve, 450));
+    this.confirmation.set(confirmation);
   }
 }

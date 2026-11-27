@@ -88,9 +88,12 @@
       }
     </label>
 
-    <button type="submit" class="primary" [disabled]="submitting()">
+    <button id="send-code" type="submit" class="primary" [disabled]="submitting()">
       {{ submitting() ? 'Sending…' : 'Send code' }}
     </button>
+    @if (sendError()) {
+      <p class="error">{{ sendError() }}</p>
+    }
   </form>
 
   <button type="button" class="text" (click)="back()">Back</button>

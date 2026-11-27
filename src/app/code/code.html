@@ -20,8 +20,6 @@
         [attr.aria-label]="'Digit ' + ($index + 1) + ' of 6'"
         [value]="digit"
         [disabled]="verifying()"
-        [readonly]="filling()"
-        (click)="startSampleFill()"
         (input)="onInput($index, $event)"
         (keydown)="onKey($index, $event)"
         (paste)="onPaste($event)"
@@ -36,6 +34,10 @@
     </div>
   } @else if (codeReady()) {
     <button type="button" class="primary" (click)="confirm()">Confirm</button>
+  }
+
+  @if (codeError()) {
+    <p class="error">{{ codeError() }}</p>
   }
 
   <button type="button" class="text" (click)="resend()" [disabled]="verifying()">
