@@ -22,8 +22,7 @@
   </div>
 
   <form class="form" (submit)="submit($event)">
-    <div class="name-row">
-      <label class="field">
+    <label class="field">
       First name
       <input
         type="text"
@@ -37,9 +36,9 @@
       @if (submitted() && errors().firstName) {
         <span class="error">{{ errors().firstName }}</span>
       }
-      </label>
+    </label>
 
-      <label class="field">
+    <label class="field">
       Last name
       <input
         type="text"
@@ -53,8 +52,7 @@
       @if (submitted() && errors().lastName) {
         <span class="error">{{ errors().lastName }}</span>
       }
-      </label>
-    </div>
+    </label>
 
     <label class="field">
       Mobile number

@@ -12,17 +12,17 @@
 }
 
 :host.compact .mark {
-  width: 2.35rem;
-  height: 2.35rem;
+  width: 3.5rem;
+  height: 3.5rem;
   flex: 0 0 auto;
-  border-width: 1.5px;
-  font-size: 0.68rem;
+  border-width: 2px;
+  font-size: 0.95rem;
 }
 
 :host.compact .dealership {
   margin: 0;
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
   line-height: 1.15;
   white-space: nowrap;
 }

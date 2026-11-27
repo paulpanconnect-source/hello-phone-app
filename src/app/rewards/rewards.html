@@ -1,5 +1,5 @@
 <main class="screen scroll" [class.settled]="bothAgreed()">
-  <app-brand-header />
+  <app-brand-header [compact]="true" />
   <h1>Welcome {{ guest()?.firstName }} {{ guest()?.lastName }} for first time visit.</h1>
 
   <section class="offer" aria-labelledby="gm-account">
