@@ -21,6 +21,12 @@ export class Rewards {
   protected readonly bothAgreed = computed(
     () => this.account() === 'accepted' && this.share() === 'accepted',
   );
+  protected readonly alreadyCustomer = computed(
+    () => this.checkIn.lookup()?.status === 'matched',
+  );
+  protected readonly newVisitor = computed(
+    () => this.checkIn.lookup()?.status === 'missing',
+  );
 
   constructor() {
     if (!this.guest()) {
@@ -46,6 +52,12 @@ export class Rewards {
     if (accepted) {
       this.showroom.award(AGREEMENT_POINTS);
     }
+  }
+
+  protected firebaseBalance(): string {
+    const lookup = this.checkIn.lookup();
+    const points = lookup?.status === 'matched' ? lookup.rewardPoints : 0;
+    return points.toLocaleString('en-US');
   }
 
   protected points(value: number): string {

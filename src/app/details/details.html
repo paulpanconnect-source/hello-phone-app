@@ -54,6 +54,10 @@
       }
     </label>
 
+    @if (nameOnRecord()) {
+      <p class="name-hint">Our system found your name is {{ nameOnRecord() }}.</p>
+    }
+
     <label class="field">
       Mobile number
       <input
@@ -62,6 +66,7 @@
         inputmode="tel"
         autocomplete="off"
         [value]="mobile()"
+        [disabled]="identityLocked()"
         (focus)="prefill('mobile')"
         (click)="prefill('mobile')"
         (input)="onMobile($event)"
@@ -78,6 +83,7 @@
         name="email"
         inputmode="email"
         autocomplete="off"
+        [disabled]="identityLocked()"
         [value]="email()"
         (focus)="prefill('email')"
         (click)="prefill('email')"

@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import {
   afterNextRender,
   Component,
@@ -7,9 +8,21 @@ import {
   viewChildren,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { BrandHeader } from '../brand-header/brand-header';
 import { CheckInService } from '../check-in.service';
 import { checkSmsCode } from '../phone-auth';
+import { ShowroomService } from '../showroom.service';
+
+export const VERIFY_CHECK_IN_URL =
+  'https://us-central1-cust-check-in.cloudfunctions.net/verifyCheckIn';
+
+interface VerifyCheckInResponse {
+  totalValue: number;
+  rewardPoints?: number | string;
+  firstNameOnRecord?: string;
+  lastNameOnRecord?: string;
+}
 
 @Component({
   selector: 'app-code',
@@ -19,6 +32,8 @@ import { checkSmsCode } from '../phone-auth';
 })
 export class Code {
   private readonly checkIn = inject(CheckInService);
+  private readonly showroom = inject(ShowroomService);
+  private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly boxes = viewChildren<ElementRef<HTMLInputElement>>('box');
 
@@ -26,8 +41,10 @@ export class Code {
   protected readonly role = this.checkIn.role;
   protected readonly digits = signal(['', '', '', '', '', '']);
   protected readonly verifying = signal(false);
+  protected readonly lookingUp = signal(false);
   protected readonly verified = signal(false);
   protected readonly codeError = signal('');
+  protected readonly profileError = signal('');
 
   constructor() {
     if (!this.guest()) {
@@ -89,18 +106,32 @@ export class Code {
     }
     const confirmation = this.checkIn.confirmation();
     this.verifying.set(true);
+    this.lookingUp.set(false);
     this.codeError.set('');
+    this.profileError.set('');
     try {
       if (!confirmation) {
         throw new Error('Missing confirmation');
       }
       await checkSmsCode(confirmation, this.digits().join(''));
-      this.verified.set(true);
+      this.lookingUp.set(true);
+      await this.lookupProfile();
     } catch {
-      this.codeError.set("That code didn't match.");
+      if (this.lookingUp()) {
+        this.profileError.set("We couldn't look up that profile.");
+      } else {
+        this.codeError.set("That code didn't match.");
+      }
     } finally {
       this.verifying.set(false);
+      this.lookingUp.set(false);
     }
+  }
+
+  protected rewardPoints(): string {
+    const lookup = this.checkIn.lookup();
+    const points = lookup?.status === 'matched' ? lookup.rewardPoints : 0;
+    return points.toLocaleString('en-US');
   }
 
   protected continue(): void {
@@ -129,6 +160,44 @@ export class Code {
     void this.router.navigateByUrl('/check-in');
   }
 
+  private async lookupProfile(): Promise<void> {
+    const guest = this.guest();
+    if (!guest) {
+      return;
+    }
+    const body = await firstValueFrom(
+      this.http.post<VerifyCheckInResponse>(VERIFY_CHECK_IN_URL, {
+        firstName: guest.firstName,
+        lastName: guest.lastName,
+        phoneNumber: guest.mobile.replace(/\D/g, ''),
+        email: guest.email,
+      }),
+    );
+    if (body.totalValue === 5) {
+      const rewardPoints = readRewardPoints(body.rewardPoints);
+      this.checkIn.lookup.set({ status: 'matched', rewardPoints });
+      this.checkIn.account.set('accepted');
+      this.showroom.balance.set(rewardPoints);
+      await this.router.navigateByUrl('/check-in/rewards');
+      return;
+    }
+    if (body.totalValue === 4) {
+      this.checkIn.lookup.set({
+        status: 'partial',
+        firstNameOnRecord: body.firstNameOnRecord ?? '',
+        lastNameOnRecord: body.lastNameOnRecord ?? '',
+      });
+      await this.router.navigateByUrl('/check-in');
+      return;
+    }
+    if (body.totalValue === 0) {
+      this.checkIn.lookup.set({ status: 'missing' });
+      await this.router.navigateByUrl('/check-in/rewards');
+      return;
+    }
+    this.profileError.set("We couldn't look up that profile.");
+  }
+
   private applyCode(value: string): void {
     const chars = value.replace(/\D/g, '').slice(0, 6);
     const next = ['', '', '', '', '', ''];
@@ -142,4 +211,9 @@ export class Code {
   private focusBox(index: number): void {
     this.boxes()[index]?.nativeElement.focus();
   }
+}
+
+function readRewardPoints(value: number | string | undefined): number {
+  const points = typeof value === 'string' ? Number(value.replace(/,/g, '')) : Number(value);
+  return Number.isFinite(points) ? points : 0;
 }

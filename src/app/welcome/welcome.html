@@ -4,4 +4,23 @@
   <div class="actions">
     <button type="button" class="primary" (click)="start()">Start Check-in</button>
   </div>
+  <div class="tester">
+    <p class="tester-label">For Tester</p>
+    <div class="actions pair tester-choice">
+      <button
+        type="button"
+        [class.selected]="tester() === 'new'"
+        (click)="startAs('new')"
+      >
+        New customer
+      </button>
+      <button
+        type="button"
+        [class.selected]="tester() === 'existing'"
+        (click)="startAs('existing')"
+      >
+        Existing customer
+      </button>
+    </div>
+  </div>
 </main>

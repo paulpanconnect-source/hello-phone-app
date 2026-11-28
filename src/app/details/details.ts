@@ -24,6 +24,18 @@ export class Details {
   protected readonly submitting = signal(false);
   protected readonly sendError = signal('');
 
+  protected identityLocked(): boolean {
+    return this.checkIn.lookup()?.status === 'partial';
+  }
+
+  protected nameOnRecord(): string {
+    const lookup = this.checkIn.lookup();
+    if (lookup?.status !== 'partial') {
+      return '';
+    }
+    return `${lookup.firstNameOnRecord} ${lookup.lastNameOnRecord}`.trim();
+  }
+
   protected helpText(): string {
     return this.role() === 'staff'
       ? 'Check in a customer on their behalf. We’ll text a code to their mobile number.'

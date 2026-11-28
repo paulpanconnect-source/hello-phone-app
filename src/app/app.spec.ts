@@ -29,6 +29,9 @@ describe('App', () => {
       'Welcome to ABC Chevrolet',
     );
     expect(compiled.textContent).toContain('Start Check-in');
+    expect(compiled.textContent).toContain('For Tester');
+    expect(compiled.textContent).toContain('New customer');
+    expect(compiled.textContent).toContain('Existing customer');
     expect(compiled.textContent).not.toContain('Agreed to connect');
   });
 });

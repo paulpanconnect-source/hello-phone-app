@@ -18,7 +18,7 @@ export const AGREEMENT_POINTS = 1500;
 export class ShowroomService {
   readonly balance = signal(0);
   readonly redeemed = signal<string[]>([]);
-  readonly brand = signal('');
+  readonly brand = signal('Chevrolet');
   readonly model = signal('');
   readonly trim = signal('');
   readonly selectedId = signal('');

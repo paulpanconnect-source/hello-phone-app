@@ -1,60 +1,90 @@
 <main class="screen scroll" [class.settled]="bothAgreed()">
   <app-brand-header [compact]="true" />
-  <h1>Welcome {{ guest()?.firstName }} {{ guest()?.lastName }} for first time visit.</h1>
+
+  @if (alreadyCustomer()) {
+    <h1>Welcome back, {{ guest()?.firstName }} {{ guest()?.lastName }}.</h1>
+  } @else if (newVisitor()) {
+    <h1>New here? Claim 3,000 bonus points</h1>
+    <p class="prompt">
+      No profile found yet. Join GM Rewards in seconds to get your welcome bonus plus rewards on today’s visit.
+    </p>
+  } @else {
+    <h1>Welcome {{ guest()?.firstName }} {{ guest()?.lastName }} for first time visit.</h1>
+  }
 
   <section class="offer" aria-labelledby="gm-account">
-    @if (account() === 'open') {
-      <h2 id="gm-account">Create your GM account, earn 1,500 points.</h2>
-      <p>Join GM Rewards free.</p>
-      <div class="actions">
-        <button type="button" class="primary" (click)="chooseAccount(true)">
-          Agree &amp; create account
-        </button>
-        <button type="button" class="secondary" (click)="chooseAccount(false)">
-          Not now
-        </button>
-      </div>
-    } @else if (account() === 'accepted') {
-      <p class="confirm" id="gm-account">GM account created and +1,500 points.</p>
-    } @else {
-      <p class="confirm" id="gm-account">No GM account for now.</p>
-    }
-  </section>
+      @if (account() === 'open') {
+        <h2 id="gm-account">Create your GM account, earn 1,500 points.</h2>
+        <p>Join GM Rewards free.</p>
+        <div class="actions">
+          <button type="button" class="primary" (click)="chooseAccount(true)">
+            Agree &amp; create account
+          </button>
+          <button type="button" class="secondary" (click)="chooseAccount(false)">
+            Skip for now
+          </button>
+        </div>
+      } @else if (account() === 'accepted') {
+        <p class="confirm" id="gm-account">
+          @if (alreadyCustomer()) {
+            Already a GM Rewards customer.
+          } @else {
+            Your GM Rewards profile is ready
+          }
+        </p>
+        @if (alreadyCustomer()) {
+          <p class="split-line">
+            <span>Current points balance</span>
+            <span>{{ firebaseBalance() }} points</span>
+          </p>
+        } @else {
+          <p class="split-line">
+            <span>Points Earned:</span>
+            <span>1,500 points</span>
+          </p>
+        }
+      } @else {
+        <p class="confirm" id="gm-account">No GM account for now.</p>
+      }
+    </section>
 
-  <section
-    class="offer"
-    [class.locked]="account() === 'open'"
-    aria-labelledby="gm-share"
-  >
-    @if (share() === 'accepted') {
-      <p class="confirm" id="gm-share">
-        Shared with ABC Chevrolet Motors. +1,500 points.
-      </p>
-    } @else if (share() === 'declined') {
-      <p class="confirm" id="gm-share">Not shared with ABC Chevrolet Motors.</p>
-    } @else {
-      <h2 id="gm-share">Share your GM account with ABC Chevrolet Motors.</h2>
-      <p>Earn another 1,500 points.</p>
-      <div class="actions">
-        <button
-          type="button"
-          class="primary"
-          [disabled]="account() === 'open'"
-          (click)="chooseShare(true)"
-        >
-          Agree to share
-        </button>
-        <button
-          type="button"
-          class="secondary"
-          [disabled]="account() === 'open'"
-          (click)="chooseShare(false)"
-        >
-          Not now
-        </button>
-      </div>
-    }
-  </section>
+    <section
+      class="offer"
+      [class.locked]="account() === 'open'"
+      aria-labelledby="gm-share"
+    >
+      @if (share() === 'accepted') {
+        <p class="confirm" id="gm-share">
+          Shared with ABC Chevrolet Motors. +1,500 points.
+        </p>
+      } @else if (share() === 'declined') {
+        <p class="confirm" id="gm-share">Not shared with ABC Chevrolet Motors.</p>
+      } @else {
+        <h2 id="gm-share">Share your GM account with ABC Chevrolet Motors.</h2>
+        <p class="split-line">
+          <span>Today’s visit earns:</span>
+          <span>+1,500 points</span>
+        </p>
+        <div class="actions">
+          <button
+            type="button"
+            class="primary"
+            [disabled]="account() === 'open'"
+            (click)="chooseShare(true)"
+          >
+            Agree and Earn 1,500 points
+          </button>
+          <button
+            type="button"
+            class="secondary"
+            [disabled]="account() === 'open'"
+            (click)="chooseShare(false)"
+          >
+            Skip for now
+          </button>
+        </div>
+      }
+    </section>
 
   @if (bothAgreed()) {
     <div class="checked-in">

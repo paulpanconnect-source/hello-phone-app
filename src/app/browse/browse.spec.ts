@@ -40,6 +40,9 @@ describe('Browse', () => {
         (button) => button.textContent?.includes('Search'),
       ) as HTMLButtonElement;
     expect(search().disabled).toBe(true);
+    expect(
+      ((fixture.nativeElement as HTMLElement).querySelector('select') as HTMLSelectElement).value,
+    ).toBe('Chevrolet');
 
     choose(fixture, 'brand', 'Chevrolet');
     const modelOptions = [

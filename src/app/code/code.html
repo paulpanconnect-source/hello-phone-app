@@ -2,10 +2,27 @@
   <app-brand-header />
 
   @if (verified()) {
-    <h1>Verification Successful!</h1>
-    <p class="prompt">We're thrilled to have you here!</p>
+    <div class="profile-found">
+      <div class="check" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="28" height="28">
+          <path
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M5 12.5 9.5 17 19 7.5"
+          />
+        </svg>
+      </div>
+      <h1>Profile Found &amp; Checked In!</h1>
+    </div>
+    <p class="reward-balance">
+      <span>Reward points</span>
+      <strong>{{ rewardPoints() }}</strong>
+    </p>
     <button type="button" class="primary" (click)="continue()">
-      Continue &amp; claim 3,000 points!
+      Continue &amp; claim 1,500 points!
     </button>
   } @else {
   <h1>Enter your 6-digit code</h1>
@@ -37,13 +54,17 @@
   @if (verifying()) {
     <div class="status" role="status">
       <span class="spinner" aria-hidden="true"></span>
-      <p class="prompt">Verifying your code…</p>
+      <p class="prompt">
+        {{ lookingUp() ? 'Checking your profile…' : 'Verifying your code…' }}
+      </p>
     </div>
   } @else if (codeReady()) {
     <button type="button" class="primary" (click)="confirm()">Confirm</button>
   }
 
-  @if (codeError()) {
+  @if (profileError()) {
+    <p class="error">{{ profileError() }}</p>
+  } @else if (codeError()) {
     <p class="error">{{ codeError() }}</p>
   }
 

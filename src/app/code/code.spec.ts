@@ -1,15 +1,19 @@
-import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import type { ConfirmationResult } from 'firebase/auth';
 import { provideRouter, Router } from '@angular/router';
 import { routes } from '../app.routes';
 import { CheckInService } from '../check-in.service';
-import { Code } from './code';
+import { Details } from '../details/details';
+import { ShowroomService } from '../showroom.service';
+import { Code, VERIFY_CHECK_IN_URL } from './code';
 
 describe('Code', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Code],
-      providers: [provideRouter(routes)],
+      imports: [Code, Details],
+      providers: [provideRouter(routes), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
   });
 
@@ -31,6 +35,29 @@ describe('Code', () => {
     });
     fixture.detectChanges();
     return fixture;
+  }
+
+  async function confirmAndFlush(
+    fixture: ComponentFixture<Code>,
+    body: Record<string, string | number>,
+  ): Promise<void> {
+    const confirm = [...(fixture.nativeElement as HTMLElement).querySelectorAll('button')].find(
+      (button) => button.textContent?.includes('Confirm'),
+    );
+    confirm?.click();
+    await Promise.resolve();
+    await Promise.resolve();
+    const request = TestBed.inject(HttpTestingController).expectOne(VERIFY_CHECK_IN_URL);
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toEqual({
+      firstName: 'Alex',
+      lastName: 'Kim',
+      phoneNumber: '6505553434',
+      email: 'alex@example.com',
+    });
+    request.flush(body);
+    await fixture.whenStable();
+    fixture.detectChanges();
   }
 
   it('should show Confirm and stay on the code screen', () => {
@@ -70,29 +97,54 @@ describe('Code', () => {
     expect(TestBed.inject(Router).url).not.toContain('rewards');
   });
 
-  it('should show a success message and hide Resend after the code matches', async () => {
+  it('should route a found customer to the rewards page', async () => {
     TestBed.inject(CheckInService).confirmation.set({
       confirm: () => Promise.resolve(undefined),
     } as unknown as ConfirmationResult);
     const fixture = enterCode();
-    const compiled = fixture.nativeElement as HTMLElement;
-    const confirm = [...compiled.querySelectorAll('button')].find((button) =>
-      button.textContent?.includes('Confirm'),
-    );
-    confirm?.click();
-    await fixture.whenStable();
-    fixture.detectChanges();
-    expect(compiled.textContent).toContain('Verification Successful!');
-    expect(compiled.textContent).toContain("We're thrilled to have you here!");
-    expect(compiled.textContent).toContain('Continue & claim 3,000 points!');
-    expect(compiled.textContent).not.toContain('Resend code');
-    expect(TestBed.inject(Router).url).not.toContain('rewards');
+    await confirmAndFlush(fixture, { totalValue: 5, rewardPoints: 4200 });
+    expect(TestBed.inject(Router).url).toContain('/check-in/rewards');
+    expect(TestBed.inject(ShowroomService).balance()).toBe(4200);
+    expect(TestBed.inject(CheckInService).account()).toBe('accepted');
+    expect(TestBed.inject(CheckInService).lookup()).toEqual({
+      status: 'matched',
+      rewardPoints: 4200,
+    });
+  });
 
-    const next = [...compiled.querySelectorAll('button')].find((button) =>
-      button.textContent?.includes('Continue'),
+  it('should return to the form and lock phone and email when the name differs', async () => {
+    TestBed.inject(CheckInService).confirmation.set({
+      confirm: () => Promise.resolve(undefined),
+    } as unknown as ConfirmationResult);
+    const fixture = enterCode();
+    await confirmAndFlush(fixture, {
+      totalValue: 4,
+      firstNameOnRecord: 'Pat',
+      lastNameOnRecord: 'Lee',
+    });
+    expect(TestBed.inject(Router).url).toBe('/check-in');
+
+    const details = TestBed.createComponent(Details);
+    details.detectChanges();
+    const form = details.nativeElement as HTMLElement;
+    const mobile = form.querySelector('input[name="mobile"]') as HTMLInputElement;
+    const email = form.querySelector('input[name="email"]') as HTMLInputElement;
+    const firstName = form.querySelector('input[name="firstName"]') as HTMLInputElement;
+    expect(mobile.disabled).toBe(true);
+    expect(email.disabled).toBe(true);
+    expect(firstName.disabled).toBe(false);
+    expect(form.textContent).toContain('Our system found your name is Pat Lee.');
+  });
+
+  it('should open the welcome bonus when no profile is found', async () => {
+    TestBed.inject(CheckInService).confirmation.set({
+      confirm: () => Promise.resolve(undefined),
+    } as unknown as ConfirmationResult);
+    const fixture = enterCode();
+    await confirmAndFlush(fixture, { totalValue: 0 });
+    expect(TestBed.inject(Router).url).toContain('/check-in/rewards');
+    expect((fixture.nativeElement as HTMLElement).textContent).not.toContain(
+      'User profile not found.',
     );
-    next?.click();
-    await fixture.whenStable();
-    expect(TestBed.inject(Router).url).toContain('rewards');
   });
 });
